@@ -1,55 +1,44 @@
+import json
+import sys
+
 class TextAdventureGame:
     def __init__(self, map_file):
-        # Initialize game state
-        self.map = load_map(map_file)
-        self.current_room = self.map.start_room
+        self.map = self.load_map(map_file)
+        self.current_room = self.map["start"]
         self.player_inventory = []
 
-    def play(self):
-        print(self.current_room.description)
-        while True:
-            command = input("What would you like to do? ").strip().lower()
-            if command.startswith("go"):
-                self.go(command[3:].strip())
-            elif command == "look":
-                self.look()
-            elif command.startswith("get"):
-                self.get(command[4:].strip())
-            elif command == "inventory":
-                self.inventory()
-            elif command == "quit":
-                print("Goodbye!")
-                break
-            else:
-                print("I don't understand that command.")
+    def load_map(self, map_file):
+        with open(map_file, 'r') as file:
+            try:
+                map_data = json.load(file)
+                self.validate_map(map_data)
+                return map_data
+            except json.JSONDecodeError:
+                sys.stderr.write("Invalid JSON format in map file.\n")
+                sys.exit(1)
 
-    def go(self, direction):
-        if direction in self.current_room.exits:
-            self.current_room = self.map.rooms[self.current_room.exits[direction]]
-            print(self.current_room.description)
-        else:
-            print("There's no way to go {}.".format(direction))
+    def validate_map(self, map_data):
+        if "start" not in map_data or "rooms" not in map_data:
+            sys.stderr.write("Map file must contain 'start' and 'rooms' keys.\n")
+            sys.exit(1)
 
-    def look(self):
-        print(self.current_room.description)
+        room_names = set()
+        for room in map_data["rooms"]:
+            if "name" not in room or "desc" not in room or "exits" not in room:
+                sys.stderr.write("Each room must have 'name', 'desc', and 'exits' keys.\n")
+                sys.exit(1)
 
-    def get(self, item):
-        if item in self.current_room.items:
-            self.player_inventory.append(item)
-            self.current_room.items.remove(item)
-            print("You pick up the {}.".format(item))
-        else:
-            print("There's no {} here.".format(item))
+            if room["name"] in room_names:
+                sys.stderr.write("Room names must be unique.\n")
+                sys.exit(1)
+            room_names.add(room["name"])
 
-    def inventory(self):
-        if self.player_inventory:
-            print("Inventory:")
-            for item in self.player_inventory:
-                print("  " + item)
-        else:
-            print("You're not carrying anything.")
+            for direction, room_id in room["exits"].items():
+                if room_id not in room_names:
+                    sys.stderr.write(f"Invalid exit in room '{room['name']}': {direction} points to non-existing room.\n")
+                    sys.exit(1)
 
-# Example usage:
+    # Other methods like play, go, look, get, inventory go here...
 if __name__ == "__main__":
-    game = TextAdventureGame("map.txt")
-    game.play(
+    game = TextAdventureGame("look.map")  # Replace "look.map" with the actual filename of your map
+    game.play()
