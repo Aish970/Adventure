@@ -1,5 +1,5 @@
-import json
 import sys
+import json
 
 abbreviations = {
     "g": ["get", "go"],
@@ -23,15 +23,19 @@ direction_abbreviations = {
 class AdventureGame:
     def __init__(self, map_file):
         self.map_file = map_file
-        self.game_map = None
-        self.current_location = None  # Initialize to None
+        self.game_map = {}  # Initialize as an empty dictionary
+        self.current_location = None
         self.player_inventory = []
         self.game_running = True
         self.load_map()
 
     def load_map(self):
         with open(self.map_file, 'r') as file:
-            self.game_map = json.load(file)
+            map_data = json.load(file)
+            # Populate game_map with location indices as keys
+            for index_str, location_data in map_data.items():
+                index = int(index_str)  # Convert key to integer
+                self.game_map[index] = location_data
         self.current_location = 0  # Set a default starting location index
 
     def start_game(self):
@@ -231,3 +235,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+             
