@@ -1,22 +1,17 @@
-def main():
+from adventure import TextAdventureGame
+
+def play_game(map_file):
+    game = TextAdventureGame(map_file)
     print("Welcome to the Text Adventure Game!")
     print("Type 'quit' at any time to exit.")
 
-    # Create the game instance
-    game = TextAdventureGame("look.map")
-
-    # Start the game loop
     while True:
-        print("\nWhat would you like to do?")
-        command = input("> ").strip().lower()
-
-        # Check if the player wants to quit
+        command = input("\nEnter a command: ").strip().lower()
         if command == "quit":
             game.quit()
-            break
-
-        # Process the player's command
-        game.process_command(command)
+        else:
+            game.play_command(command)
 
 if __name__ == "__main__":
-    main()
+    map_file = input("Enter the filename of the map file: ")
+    play_game(map_file)
