@@ -40,7 +40,8 @@ class TextAdventureGame:
                     continue
 
     def go(self, direction):
-        if direction in self.current_room["exits"]:
+        print("Current Room:", self.current_room)
+        if "exits" in self.current_room and direction in self.current_room["exits"]:
             next_room_name = self.current_room["exits"][direction]
             for room in self.map["rooms"]:
                 if room["name"] == next_room_name:
