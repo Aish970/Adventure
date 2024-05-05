@@ -16,12 +16,9 @@ class TextAdventureGame:
 
     def print_room_description(self):
         current_room_data = self.rooms[self.current_room]
-        print(f"> {current_room_data['name']}\n")
+        print(f"{current_room_data['name']}\n")
         print(current_room_data["desc"])
-        if "items" in current_room_data:
-            print("\nItems:", ", ".join(current_room_data["items"]))
         print("\nExits:", ", ".join(current_room_data["exits"].keys()))
-        print("\nWhat would you like to do?")
 
     def execute_command(self, command):
         command = command.strip().lower()
