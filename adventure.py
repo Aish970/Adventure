@@ -2,8 +2,7 @@ import json
 import sys
 
 class Room:
-    def __init__(self, id, name, desc, exits, items=None, locked=None, key=None):
-        self.id = id
+    def __init__(self, name, desc, exits, items=None, locked=False, key=None):
         self.name = name
         self.desc = desc
         self.exits = exits
@@ -11,116 +10,106 @@ class Room:
         self.locked = locked
         self.key = key
 
-class Command:
-    def __init__(self, name, description, action):
-        self.name = name
-        self.description = description
-        self.action = action
-
-class GameEngine:
+class AdventureGame:
     def __init__(self, map_file):
-        self.rooms, self.locked_doors = self.load_map(map_file)
-        self.current_room = self.find_start_room()  # Set the starting room
-        self.inventory = []
-        self.commands = self.initialize_commands()
+        self.map_file = map_file
+        self.game_map = None
+        self.current_room = None
+        self.player_inventory = []
+        self.game_running = True
+        self.load_map()
 
-    def find_start_room(self):
-        for i, room in enumerate(self.rooms):
-            if room.name == self.start_room_name:
-                return i
-        print("Error: Starting room not found.")
-        sys.exit(1)
-
-    def initialize_commands(self):
-        return {
-            "go": Command("go", "Move in a direction (e.g., 'go east')", self.go),
-            "look": Command("look", "Look around the room", lambda: self.describe_room(self.current_room)),
-            "get": Command("get", "Pick up an item (e.g., 'get key')", self.get_item),
-            "inventory": Command("inventory", "Check your inventory", self.show_inventory),
-            "quit": Command("quit", "Quit the game", lambda: self.quit_game()),
-            "help": Command("help", "Show available commands", self.show_help)
-        }
-
-    def load_map(self, map_file):
+    def load_map(self):
         try:
-            with open(map_file, 'r') as file:
-                map_data = json.load(file)
-                self.start_room_name = map_data["start"]  # Store the starting room name
-                rooms = []
-                locked_doors = {}
-                for i, room_data in enumerate(map_data["rooms"]):
-                    exits = {}
-                    for direction, room_name in room_data["exits"].items():
-                        exits[direction] = next((idx for idx, room in enumerate(map_data["rooms"]) if room["name"] == room_name), None)
-                    rooms.append(Room(i, room_data["name"], room_data["desc"], exits, room_data.get("items"), room_data.get("locked"), room_data.get("key")))
-                    if room_data.get("locked"):
-                        locked_doors[i] = room_data["key"]
-                return rooms, locked_doors
+            with open(self.map_file, 'r') as file:
+                data = json.load(file)
+                self.game_map = {room["name"]: Room(**room) for room in data["rooms"]}
+                self.current_room = self.game_map[data["start"]]
         except FileNotFoundError:
-            print(f"Error: The file '{map_file}' was not found.")
+            print("Error: Map file not found.")
             sys.exit(1)
         except json.JSONDecodeError:
-            print("Error: The map file is not in valid JSON format.")
+            print("Error: Invalid JSON format in the map file.")
             sys.exit(1)
 
     def start_game(self):
-        print("Welcome to the Text Adventure Game!")
-        while True:
+        print("Welcome to the Text Adventure Game!\n")
+        self.describe_room(self.current_room)
+        while self.game_running:
+            try:
+                command = input("> ").strip().lower()
+                self.process_command(command)
+            except EOFError:
+                print("\nUse 'quit' to exit.")
+
+    def process_command(self, command):
+        command_parts = command.split()
+        base_command = command_parts[0]
+
+        if base_command == "go":
+            if len(command_parts) < 2:
+                print("Go where?")
+                return
+            direction = command_parts[1]
+            self.move(direction)
+        elif base_command == "get":
+            if len(command_parts) < 2:
+                print("Get what?")
+                return
+            item_name = " ".join(command_parts[1:])
+            self.get_item(item_name)
+        elif base_command == "look":
             self.describe_room(self.current_room)
-            command_input = input("What would you like to do? ").strip().lower()
-            self.process_command(command_input)
-
-    def describe_room(self, room):
-        print(f"\n> {room.name}\n\n{room.desc}\n")
-        print("Items:", ", ".join(room.items) if room.items else "No items")
-        print("Exits:", " ".join(room.exits.keys()))
-
-    def process_command(self, command_input):
-        command_parts = command_input.split()
-        command_name = command_parts[0]
-        command_args = command_parts[1:]
-
-        command = self.commands.get(command_name)
-        if command:
-            command.action(*command_args)
+        elif base_command == "inventory":
+            self.show_inventory()
+        elif base_command == "quit":
+            print("Goodbye!")
+            self.game_running = False
         else:
-            print("Unknown command.")
+            print("Invalid command. Type 'help' for a list of commands.")
 
-    def go(self, direction):
-        if direction in self.current_room.exits:
-            next_room_id = self.current_room.exits[direction]
-            if next_room_id in self.locked_doors and self.locked_doors[next_room_id] not in self.inventory:
-                print(f"The door is locked. You need {self.locked_doors[next_room_id]} to open it.")
+    def move(self, direction):
+        next_room_name = self.current_room.exits.get(direction)
+        if next_room_name:
+            next_room = self.game_map.get(next_room_name)
+            if next_room:
+                self.current_room = next_room
+                self.describe_room(self.current_room)
             else:
-                self.current_room = self.rooms[next_room_id]
+                print("Error: Invalid room name in the map file.")
         else:
             print("You can't go that way.")
 
-    def get_item(self, item):
-        if item in self.current_room.items:
-            self.current_room.items.remove(item)
-            self.inventory.append(item)
-            print(f"You picked up the {item}.")
+    def get_item(self, item_name):
+        if item_name in self.current_room.items:
+            self.current_room.items.remove(item_name)
+            self.player_inventory.append(item_name)
+            print(f"You picked up {item_name}.")
         else:
-            print("That item is not here.")
+            print(f"{item_name} is not here.")
 
     def show_inventory(self):
-        print("Inventory:", ", ".join(self.inventory) if self.inventory else "You're not carrying anything.")
+        if self.player_inventory:
+            print("Inventory:")
+            for item in self.player_inventory:
+                print("-", item)
+        else:
+            print("Your inventory is empty.")
 
-    def show_help(self):
-        print("Available commands:")
-        for command in self.commands.values():
-            print(f"  {command.name}: {command.description}")
+    def describe_room(self, room):
+        print(f"\n> {room.name}\n\n{room.desc}\n")
+        if room.items:
+            print("Items in the room:", ", ".join(room.items))
+        exits = ", ".join(room.exits.keys())
+        print(f"Exits: {exits}")
 
-    def quit_game(self):
-        print("Goodbye!")
-        sys.exit()
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python3 adventure.py [map_file]")
+        sys.exit(1)
+    map_file = sys.argv[1]
+    game = AdventureGame(map_file)
+    game.start_game()
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 adventure.py [map filename]")
-        sys.exit(1)
-
-    map_file = sys.argv[1]
-    game = GameEngine(map_file)
-    game.start_game()
+    main()
