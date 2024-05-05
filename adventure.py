@@ -103,5 +103,5 @@ class TextAdventureGame:
                 print("Invalid command.")
 
 if __name__ == "__main__":
-    game = TextAdventureGame("look.map")  # Replace "look.map" with the actual filename of your map
+    game = TextAdventureGame("look.map")
     game.play()
