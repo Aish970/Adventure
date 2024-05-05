@@ -1,4 +1,5 @@
 import json
+import sys
 from sys import argv
 
 abbreviations = {
