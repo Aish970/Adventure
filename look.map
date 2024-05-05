@@ -4,24 +4,22 @@
     {
       "name": "A white room",
       "desc": "You are in a simple room with white walls.",
-      "exits": { "north": "A blue room", "east": "A red room", "west": "A green room" }
+      "exits": { "north": "A Blue Room", "east": "A red room" }
     },
     {
-      "name": "A blue room",
+      "name": "A Blue Room",
       "desc": "This room is simple, too, but with blue walls.",
-      "exits": { "north": "A white room", "east": "A green room", "south": "A white room", "west": "A red room" }
-    },
-    {
-      "name": "A green room",
-      "desc": "You are in a simple room, with bright green walls.",
-      "exits": { "north": "A blue room", "south": "A red room", "west": "A white room" },
-      "items": ["bellows"]
+      "exits": { "south": "A white room" }
     },
     {
       "name": "A red room",
       "desc": "This room is fancy. It's red!",
-      "exits": { "north": "A green room", "east": "A blue room" },
-      "items": ["rose"]
+      "exits": { "north": "A green room", "west": "A white room" }
+    },
+    {
+      "name": "A green room",
+      "desc": "You are in a simple room, with bright green walls.",
+      "exits": { "south": "A red room", "west": "A Blue Room" }
     }
   ]
 }
