@@ -1,6 +1,5 @@
 import json
 import sys
-from sys import argv
 
 abbreviations = {
     "g": ["get", "go"],
@@ -221,34 +220,11 @@ class AdventureGame:
         print("  quit - Exit the game.")
 
 
-def validate_map(map_file):
-    with open(map_file, 'r') as file:
-        game_map = json.load(file)
-    
-    room_names = set()
-    for room in game_map.get("rooms", []):
-        name = room.get("name")
-        if not name:
-            raise ValueError("A room must have a name.")
-        if name in room_names:
-            raise ValueError(f"Duplicate room name '{name}'.")
-        room_names.add(name)
-        
-        exits = room.get("exits", {})
-        for direction, destination in exits.items():
-            if destination not in room_names:
-                print(f"Invalid exit destination '{destination}'")
-                return False
-    return True
-
-
 def main():
-    if len(argv) < 2:
+    if len(sys.argv) < 2:
         print("Usage: python3 adventure.py [map_file]")
         return
-    map_file = argv[1]
-    if not validate_map(map_file):  # Validate the map file before starting the game
-        return
+    map_file = sys.argv[1]
     game = AdventureGame(map_file)
     game.start_game()
 
