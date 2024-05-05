@@ -45,22 +45,21 @@ class TextAdventureGame:
             print(f"Invalid command: '{command}' is not recognized.")
 
     def go(self, direction):
-       current_room_data = self.rooms[self.current_room]
-       exits = current_room_data["exits"]
-       if direction in exits:
-        self.current_room = exits[direction]
-        print(f"You go {direction}.")
-        self.print_room_description()  # Print the description of the new room
-       else:
-        print(f"There's no way to go {direction}.")
-      
+        current_room_data = self.rooms[self.current_room]
+        exits = current_room_data["exits"]
+        if direction in exits:
+            self.current_room = exits[direction]
+            print(f"You go {direction}.")
+            self.print_room_description()  # Print the description of the new room
+        else:
+            print(f"There's no way to go {direction}.")
 
     def get(self, item):
         current_room_data = self.rooms[self.current_room]
         if "items" in current_room_data and item in current_room_data["items"]:
             print(f"You pick up the {item}.")
             current_room_data["items"].remove(item)
-            self.inventory.append(item)  # Add item to inventory
+            self.inventory.append(item)
         else:
             print(f"There's no {item} anywhere.")
 
@@ -79,5 +78,4 @@ if __name__ == "__main__":
     while True:
         command = input().strip()
         game.execute_command(command)
-
 
