@@ -23,7 +23,7 @@ direction_abbreviations = {
 class AdventureGame:
     def __init__(self, map_file):
         self.map_file = map_file
-        self.game_map = {}  # Initialize as an empty dictionary
+        self.game_map = {}
         self.current_location = None
         self.player_inventory = []
         self.game_running = True
@@ -32,10 +32,15 @@ class AdventureGame:
     def load_map(self):
         with open(self.map_file, 'r') as file:
             map_data = json.load(file)
-            # Populate game_map with location indices as keys
-            for index_str, location_data in map_data.items():
-                index = int(index_str)  # Convert key to integer
-                self.game_map[index] = location_data
+            if "start" in map_data:
+                del map_data["start"]  # Remove the "start" key if present
+            for index_str, room_data in map_data.items():
+                try:
+                    index = int(index_str)
+                except ValueError:
+                    print(f"Invalid room index: {index_str}. Skipping.")
+                    continue
+                self.game_map[index] = room_data
         self.current_location = 0  # Set a default starting location index
 
     def start_game(self):
