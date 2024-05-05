@@ -32,6 +32,7 @@ class AdventureGame:
     def load_map(self):
         with open(self.map_file, 'r') as file:
             self.game_map = json.load(file)
+        print("Game map loaded successfully:", self.game_map)
 
     def start_game(self):
         self.look()
@@ -54,6 +55,7 @@ class AdventureGame:
     def process_command(self, command):
         command_parts = command.split()
         base_command = command_parts[0]
+        print("Base command:", base_command)
 
         # Check if command is an abbreviation and get its full form
         if base_command in direction_abbreviations.values() or base_command in direction_abbreviations:
@@ -85,10 +87,11 @@ class AdventureGame:
 
     def move_player(self, direction):
         current_location = self.game_map[self.current_location]
+        print("Current location:", current_location)
         if direction in current_location["exits"]:
             next_location_index = current_location["exits"][direction]
             self.current_location = next_location_index
-            print(f"You go {direction}.\n")
+            print(f"You go {direction}. Current location index: {self.current_location}")
             self.look()
         else:
             print(f"There's no way to go {direction}.\n")
