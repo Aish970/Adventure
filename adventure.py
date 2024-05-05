@@ -39,9 +39,6 @@ class TextAdventureGame:
         print("\nWhat would you like to do?")
 
     def execute_command(self, command):
-        # Print the input command
-        print("> " + command)
-
         # Convert the command to lowercase and split it into words
         command_parts = command.lower().split()
 
@@ -116,6 +113,4 @@ if __name__ == "__main__":
         command = input().strip()
         game.execute_command(command)
 
-
-
-
+        r
