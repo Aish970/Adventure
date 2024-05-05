@@ -219,15 +219,37 @@ class AdventureGame:
         print("  help - Display this help message.")
         print("  quit - Exit the game.")
 
+def validate_map(map_file):
+    try:
+        with open(map_file, 'r') as file:
+            game_map = json.load(file)
+        start_room = game_map.get("start")
+        rooms = game_map.get("rooms", [])
+        room_names = set()
+        for room in rooms:
+            name = room.get("name")
+            desc = room.get("desc")
+            exits = room.get("exits", {})
+            if not (name and desc and exits):
+                raise ValueError("Invalid room format")
+            if name in room_names:
+                raise ValueError("Room names must be unique")
+            room_names.add(name)
+            for exit_direction, destination in exits.items():
+                if destination not in room_names:
+                    raise ValueError(f"Invalid exit destination '{destination}'")
+    except Exception as e:
+        print(e, file=sys.stderr)
+        exit(1)
 
 def main():
     if len(argv) < 2:
         print("Usage: python3 adventure.py [map_file]")
         return
     map_file = argv[1]
+    validate_map(map_file)  # Validate the map file before starting the game
     game = AdventureGame(map_file)
     game.start_game()
-
 
 if __name__ == "__main__":
     main()
