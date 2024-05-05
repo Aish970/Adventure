@@ -123,8 +123,8 @@ class AdventureGame:
         else:
             print("No items in this location.")
         exits = location.get("exits", {})
-        exits_description = " ".join(exits.keys())
-        print(f"\nExits: {exits_description}")
+        exits_description = ", ".join(exits.keys())
+        print(f"Exits: {exits_description}")
 
     def handle_get_command(self, args):
         if args:
@@ -142,10 +142,10 @@ class AdventureGame:
         elif len(matching_items) > 1:
             self.ask_for_item_clarification(matching_items)
         else:
-            print("There's no " + str(item_abbr) + " anywhere.")
+            print(f"There's no {item_abbr} anywhere.")
 
     def ask_for_item_clarification(self, matching_items):
-        print("Did you want to get the " + ", ".join(matching_items) + "?")
+        print(f"Did you want to get the {' '.join(matching_items)}?")
         choice = input("What would you like to do? ").strip().lower()
         if choice in matching_items:
             self.pick_up_item(choice)
@@ -199,3 +199,22 @@ class AdventureGame:
     def show_help(self):
         print("\nAvailable commands:")
         print("  go [direction] - Move in the specified direction (north, south, east, west).")
+        print("  get [item] - Pick up an item from the current location.")
+        print("  drop [item] - Drop an item from your inventory into the current location.")
+        print("  inventory - Show the items you are carrying.")
+        print("  look - Describe the current location.")
+        print("  items - List all items in the current location.")
+        print("  exits - Show all available exits from the current location.")
+        print("  help - Display this help message.")
+        print("  quit - Exit the game.")
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python3 adventure.py [map_file]")
+        sys.exit(1)
+    map_file = sys.argv[1]
+    game = AdventureGame(map_file)
+    game.start_game()
+
+if __name__ == "__main__":
+    main()
