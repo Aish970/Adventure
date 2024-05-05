@@ -62,8 +62,6 @@
       "exits": {
         "north": "A green room",
         "west": "An orange room"
-        "northwest": "A white room",
-      
       }
     },
     {
@@ -74,8 +72,7 @@
         "west": "A white room",
         "south": "A red room",
         "northwest": "A blue room",
-        "southwest": "A orange room"
-        
+        "southwest": "An orange room"
       }
     },
     {
@@ -100,3 +97,4 @@
     }
   ]
 }
+
