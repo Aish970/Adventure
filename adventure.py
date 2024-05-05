@@ -4,6 +4,7 @@ class TextAdventureGame:
     def __init__(self, map_file):
         self.map = self.load_map(map_file)
         self.current_room = self.map["start"]
+        self.inventory = []
         self.print_room_description(self.get_current_room_data())
 
     def load_map(self, map_file):
@@ -33,6 +34,10 @@ class TextAdventureGame:
     def print_room_description(self, room_data):
         print(f"> {room_data['name']}\n")
         print(room_data["desc"])
+        if self.inventory:
+            print("\nInventory:")
+            for item in self.inventory:
+                print(f"  {item}")
         print("\nExits:", ", ".join(room_data["exits"].keys()))
         print("\nWhat would you like to do?")
 
@@ -68,10 +73,10 @@ class TextAdventureGame:
         elif verb == "look":
             self.look()
         elif verb == "inventory":
-            self.inventory()
+            self.print_inventory()
         elif verb == "get":
             if len(command_parts) < 2:
-                print("Sorry, you need to 'get' something.")
+                print("Sorry, you need to specify what to 'get'.")
                 return
             item = " ".join(command_parts[1:])
             self.get(item)
@@ -92,21 +97,28 @@ class TextAdventureGame:
         current_room_data = self.get_current_room_data()
         self.print_room_description(current_room_data)
 
-    def inventory(self):
-        print("You're not carrying anything.")  # Assuming inventory functionality is not implemented
+    def print_inventory(self):
+        if self.inventory:
+            print("Inventory:")
+            for item in self.inventory:
+                print(f"  {item}")
+        else:
+            print("You're not carrying anything.")
 
     def get(self, item):
-        print(f"There's no {item} anywhere.")  # Assuming item functionality is not implemented
+        if item in self.get_current_room_data().get("items", []):
+            self.inventory.append(item)
+            print(f"You pick up the {item}.")
+        else:
+            print(f"There's no {item} to pick up here.")
 
     def get_current_room_data(self):
         for room in self.map["rooms"]:
             if room["name"] == self.current_room:
                 return room
+
 if __name__ == "__main__":
     game = TextAdventureGame("look.map")
-    
-    # Print initial room information
-    game.look()
     
     # Enter input loop
     while True:
