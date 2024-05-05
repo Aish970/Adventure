@@ -37,6 +37,9 @@ class TextAdventureGame:
                 if room_id not in room_names:
                     sys.stderr.write(f"Invalid exit in room '{room['name']}': {direction} points to non-existing room.\n")
                     sys.exit(1)
+                elif room_id == room["name"]:
+                    sys.stderr.write(f"Invalid exit in room '{room['name']}': {direction} points to itself.\n")
+                    sys.exit(1)
 
     def go(self, direction):
         if direction in self.current_room["exits"]:
