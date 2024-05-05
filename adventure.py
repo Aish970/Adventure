@@ -102,9 +102,8 @@ class TextAdventureGame:
         for room in self.map["rooms"]:
             if room["name"] == self.current_room:
                 return room
-
 if __name__ == "__main__":
-    game = TextAdventureGame("loop.map")
+    game = TextAdventureGame("look.map")
     
     # Print initial room information
     game.look()
@@ -113,3 +112,5 @@ if __name__ == "__main__":
     while True:
         command = input().strip()
         game.execute_command(command)
+
+
