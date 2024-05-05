@@ -36,6 +36,62 @@
         "south": "A black room"
       }
     },
-    // Add other rooms here
+    {
+      "name": "A blue room",
+      "desc": "You are in a blue room. There are exits to the south, east, and west.",
+      "exits": {
+        "south": "A white room",
+        "east": "A purple room",
+        "west": "A pink room",
+        "southeast": "A green room",
+        "southwest": "A yellow room"
+      }
+    },
+    {
+      "name": "A purple room",
+      "desc": "You are in a purple room. There are exits to the west, south, and southwest.",
+      "exits": {
+        "west": "A blue room",
+        "south": "A green room",
+        "southwest": "A white room"
+      }
+    },
+    {
+      "name": "A red room",
+      "desc": "You are in a red room. There is an exit to the north and west.",
+      "exits": {
+        "north": "A green room",
+        "west": "An orange room"
+      }
+    },
+    {
+      "name": "A green room",
+      "desc": "You are in a green room. There are exits to the north, west, and south.",
+      "exits": {
+        "north": "A purple room",
+        "west": "A white room",
+        "south": "A red room"
+      }
+    },
+    {
+      "name": "An orange room",
+      "desc": "You are in an orange room. There are exits to the east, west, north, northeast, and northwest.",
+      "exits": {
+        "east": "A red room",
+        "west": "A black room",
+        "north": "A white room",
+        "northeast": "A green room",
+        "northwest": "A yellow room"
+      }
+    },
+    {
+      "name": "A black room",
+      "desc": "You are in a black room. There are exits to the east, north, and northeast.",
+      "exits": {
+        "east": "An orange room",
+        "north": "A yellow room",
+        "northeast": "A white room"
+      }
+    }
   ]
 }
