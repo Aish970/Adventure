@@ -16,7 +16,6 @@ class TextAdventureGame:
         if "start" not in map_data or "rooms" not in map_data:
             print("Invalid map: 'start' and 'rooms' keys are required.")
             exit(1)
-        
         room_names = set()
         for room in map_data["rooms"]:
             if "name" not in room or "desc" not in room or "exits" not in room:
@@ -26,18 +25,16 @@ class TextAdventureGame:
                 print(f"Duplicate room name: {room['name']}. Room names must be unique.")
                 exit(1)
             room_names.add(room["name"])
-        
-        # Validate exits after iterating over all rooms
-        for room in map_data["rooms"]:
-            exits = room.get("exits", {})
-            for destination in exits.values():
+            for exit_direction, destination in room["exits"].items():
                 if destination not in room_names:
-                    print(f"Invalid exit in room '{room['name']}': points to non-existing room '{destination}'.")
+                    print(f"Invalid exit in room '{room['name']}': {exit_direction} points to non-existing room '{destination}'.")
                     exit(1)
 
     def print_room_description(self, room_data):
         print(f"> {room_data['name']}\n")
         print(room_data["desc"])
+        if "items" in room_data:
+            print("\nItems:", ", ".join(room_data["items"]))
         print("\nExits:", ", ".join(room_data["exits"].keys()))
         print("\nWhat would you like to do?")
 
@@ -118,6 +115,7 @@ if __name__ == "__main__":
     while True:
         command = input().strip()
         game.execute_command(command)
+
 
 
 
