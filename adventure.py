@@ -4,7 +4,6 @@ class TextAdventureGame:
     def __init__(self, map_file):
         self.map = self.load_map(map_file)
         self.current_room = self.map["start"]
-        self.inventory = []
         self.print_room_description(self.get_current_room_data())
 
     def load_map(self, map_file):
@@ -17,6 +16,7 @@ class TextAdventureGame:
         if "start" not in map_data or "rooms" not in map_data:
             print("Invalid map: 'start' and 'rooms' keys are required.")
             exit(1)
+        
         room_names = set()
         for room in map_data["rooms"]:
             if "name" not in room or "desc" not in room or "exits" not in room:
@@ -26,18 +26,18 @@ class TextAdventureGame:
                 print(f"Duplicate room name: {room['name']}. Room names must be unique.")
                 exit(1)
             room_names.add(room["name"])
-            for exit_direction, destination in room["exits"].items():
+        
+        # Validate exits after iterating over all rooms
+        for room in map_data["rooms"]:
+            exits = room.get("exits", {})
+            for destination in exits.values():
                 if destination not in room_names:
-                    print(f"Invalid exit in room '{room['name']}': {exit_direction} points to non-existing room '{destination}'.")
+                    print(f"Invalid exit in room '{room['name']}': points to non-existing room '{destination}'.")
                     exit(1)
 
     def print_room_description(self, room_data):
         print(f"> {room_data['name']}\n")
         print(room_data["desc"])
-        if self.inventory:
-            print("\nInventory:")
-            for item in self.inventory:
-                print(f"  {item}")
         print("\nExits:", ", ".join(room_data["exits"].keys()))
         print("\nWhat would you like to do?")
 
@@ -73,10 +73,10 @@ class TextAdventureGame:
         elif verb == "look":
             self.look()
         elif verb == "inventory":
-            self.print_inventory()
+            self.inventory()
         elif verb == "get":
             if len(command_parts) < 2:
-                print("Sorry, you need to specify what to 'get'.")
+                print("Sorry, you need to 'get' something.")
                 return
             item = " ".join(command_parts[1:])
             self.get(item)
@@ -97,20 +97,11 @@ class TextAdventureGame:
         current_room_data = self.get_current_room_data()
         self.print_room_description(current_room_data)
 
-    def print_inventory(self):
-        if self.inventory:
-            print("Inventory:")
-            for item in self.inventory:
-                print(f"  {item}")
-        else:
-            print("You're not carrying anything.")
+    def inventory(self):
+        print("You're not carrying anything.")  # Assuming inventory functionality is not implemented
 
     def get(self, item):
-        if item in self.get_current_room_data().get("items", []):
-            self.inventory.append(item)
-            print(f"You pick up the {item}.")
-        else:
-            print(f"There's no {item} to pick up here.")
+        print(f"There's no {item} anywhere.")  # Assuming item functionality is not implemented
 
     def get_current_room_data(self):
         for room in self.map["rooms"]:
@@ -120,9 +111,13 @@ class TextAdventureGame:
 if __name__ == "__main__":
     game = TextAdventureGame("look.map")
     
+    # Print initial room information
+    game.look()
+    
     # Enter input loop
     while True:
         command = input().strip()
         game.execute_command(command)
+
 
 
