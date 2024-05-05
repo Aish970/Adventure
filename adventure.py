@@ -38,7 +38,70 @@ class TextAdventureGame:
                     sys.stderr.write(f"Invalid exit in room '{room['name']}': {direction} points to non-existing room.\n")
                     sys.exit(1)
 
-    # Other methods like play, go, look, get, inventory go here...
+    def go(self, direction):
+        if direction in self.current_room["exits"]:
+            next_room_name = self.current_room["exits"][direction]
+            for room in self.map["rooms"]:
+                if room["name"] == next_room_name:
+                    self.current_room = room
+                    print(f"You have moved {direction}.")
+                    self.look()
+                    return
+            print("There is no room in that direction.")
+        else:
+            print("There is no exit in that direction.")
+
+    def look(self):
+        print(f"You are in {self.current_room['name']}.")
+        print(self.current_room['desc'])
+        if 'items' in self.current_room and self.current_room['items']:
+            print("You see the following items in the room:")
+            for item in self.current_room['items']:
+                print(item)
+        else:
+            print("There are no items in this room.")
+        print("Exits:")
+        for direction, room_id in self.current_room['exits'].items():
+            print(f"{direction}: {room_id}")
+
+    def get(self, item):
+        if 'items' in self.current_room and item in self.current_room['items']:
+            self.player_inventory.append(item)
+            self.current_room['items'].remove(item)
+            print(f"You picked up {item}.")
+        else:
+            print(f"There is no {item} in this room.")
+
+    def inventory(self):
+        if self.player_inventory:
+            print("Your inventory:")
+            for item in self.player_inventory:
+                print(item)
+        else:
+            print("Your inventory is empty.")
+
+    def quit(self):
+        print("Thanks for playing!")
+        sys.exit(0)
+
+    def play(self):
+        while True:
+            command = input("Enter a command: ").strip().lower()
+            if command.startswith("go "):
+                direction = command.split()[1]
+                self.go(direction)
+            elif command.startswith("get "):
+                item = command.split()[1]
+                self.get(item)
+            elif command == "inventory":
+                self.inventory()
+            elif command == "look":
+                self.look()
+            elif command == "quit":
+                self.quit()
+            else:
+                print("Invalid command.")
+
 if __name__ == "__main__":
     game = TextAdventureGame("look.map")  # Replace "look.map" with the actual filename of your map
     game.play()
