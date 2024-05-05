@@ -66,7 +66,10 @@ class AdventureGame:
 
     def execute_command(self, command, args):
         if command == "go":
-            self.move_player(args)
+            if len(args) == 1:
+                self.move_player(args)
+            else:
+                print("Invalid direction. Please specify a single direction.")
         elif command == "look":
             self.look()
         elif command == "get":
