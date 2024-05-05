@@ -232,10 +232,10 @@ class AdventureGame:
 
 
 def main():
-    if len(sys.argv) < 2:
+    if len(argv) < 2:
         print("Usage: python3 adventure.py [map_file]")
         return
-    map_file = sys.argv[1]
+    map_file = argv[1]
     game = AdventureGame(map_file)
     game.start_game()
 
