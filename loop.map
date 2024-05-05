@@ -5,20 +5,20 @@
       "name": "A white room",
       "desc": "You are in a simple room with white walls.",
       "items": [],
-      "exits": { "north": "A blue room", "northwest": "A green room", "east": "A red room" },
+      "exits": { "north": 1, "northwest": 2, "east": 3 },
       "locked": false
     },
     {
       "name": "A blue room",
       "desc": "This room is simple, too, but with blue walls.",
       "items": [],
-      "exits": { "west": "A green room", "south": "A white room", "east": "A red room" },
+      "exits": { "west": 2, "south": 0, "east": 3 },
       "locked": false
     },
     {
       "name": "A green room",
       "desc": "You are in a simple room, with bright green walls.",
-      "exits": { "east": "A blue room", "southeast": "A white room", "west": "A purple room" },
+      "exits": { "east": 1, "southeast": 0, "west": 4 },
       "items": ["banana", "bandana", "bellows", "deck of cards"],
       "locked": true,
       "key": "banana"
@@ -26,19 +26,17 @@
     {
       "name": "A red room",
       "desc": "This room is fancy. It's red!",
-      "exits": { "west": "A blue room", "southwest": "A white room" },
+      "exits": { "west": 1, "southwest": 0 },
       "items": ["rose"]
     },
     {
       "name": "A purple room",
       "desc": "This room is fancy. It's secret!",
-      "exits": { "east": "A green room" },
+      "exits": { "east": 2 },
       "items": []
     }
   ]
 }
-
-
 
 
 
