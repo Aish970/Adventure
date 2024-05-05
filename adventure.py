@@ -5,7 +5,7 @@ class TextAdventureGame:
     def __init__(self, map_file):
         self.rooms = {}
         self.current_room = None
-        self.inventory = []  # Initialize inventory
+        self.inventory = set()  # Initialize inventory as a set
         self.load_map(map_file)
 
     def load_map(self, map_file):
@@ -18,9 +18,13 @@ class TextAdventureGame:
         current_room_data = self.rooms[self.current_room]
         print(f"> {current_room_data['name']}\n")
         print(current_room_data["desc"])
-        if "items" in current_room_data:
-            print("\nItems:", ", ".join(current_room_data["items"]))
-        print("\nExits:", ", ".join(current_room_data["exits"].keys()))
+        items = current_room_data.get("items", [])
+        if items:
+            print("\nItems:")
+            for item in items:
+                print(f"  {item}")
+        exits = current_room_data["exits"]
+        print("\nExits:", ", ".join(exits.keys()))
         print("\nWhat would you like to do?")
 
     def execute_command(self, command):
@@ -29,25 +33,19 @@ class TextAdventureGame:
             return
         if command == "quit":
             print("Goodbye!")
-            self.inventory = []  # Clear inventory when quitting
             sys.exit(0)
         elif command == "look":
             self.print_room_description()
-            print("\nWhat would you like to do?")  # Added line
         elif command.startswith("go "):
             direction = command[3:]
             self.go(direction)
-            print("\nWhat would you like to do?")  # Added line
         elif command.startswith("get "):
             item = command[4:]
             self.get(item)
-            print("\nWhat would you like to do?")  # Added line
         elif command == "inventory":
             self.show_inventory()
-            print("\nWhat would you like to do?")  # Added line
         else:
             print(f"Invalid command: '{command}' is not recognized.")
-            print("\nWhat would you like to do?")  # Added line
 
     def go(self, direction):
         current_room_data = self.rooms[self.current_room]
@@ -55,16 +53,17 @@ class TextAdventureGame:
         if direction in exits:
             self.current_room = exits[direction]
             print(f"You go {direction}.")
-            self.print_room_description()  # Print the description of the new room
+            self.print_room_description()
         else:
             print(f"There's no way to go {direction}.")
 
     def get(self, item):
         current_room_data = self.rooms[self.current_room]
-        if "items" in current_room_data and item in current_room_data["items"]:
+        items = current_room_data.get("items", [])
+        if item in items:
             print(f"You pick up the {item}.")
-            current_room_data["items"].remove(item)
-            self.inventory.append(item)
+            items.remove(item)
+            self.inventory.add(item)
         else:
             print(f"There's no {item} anywhere.")
 
@@ -83,5 +82,3 @@ if __name__ == "__main__":
     while True:
         command = input().strip()
         game.execute_command(command)
-
-
