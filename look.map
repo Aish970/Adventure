@@ -4,7 +4,7 @@
     {
       "name": "A white room",
       "desc": "You are in a simple room with white walls.",
-      "exits": { "north": "A blue room", "east": "A red room" }
+      "exits": { "north": "A blue room", "east": "A red room", "northwest": "A green room" }
     },
     {
       "name": "A blue room",
@@ -25,4 +25,3 @@
     }
   ]
 }
-
