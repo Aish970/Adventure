@@ -5,7 +5,7 @@ class TextAdventureGame:
     def __init__(self, map_file):
         self.rooms = {}
         self.current_room = None
-        self.inventory = []
+        self.inventory = []  # Initialize inventory
         self.load_map(map_file)
 
     def load_map(self, map_file):
@@ -29,6 +29,7 @@ class TextAdventureGame:
             return
         if command == "quit":
             print("Goodbye!")
+            self.inventory = []  # Clear inventory when quitting
             sys.exit(0)
         elif command == "look":
             self.print_room_description()
@@ -57,7 +58,7 @@ class TextAdventureGame:
         if "items" in current_room_data and item in current_room_data["items"]:
             print(f"You pick up the {item}.")
             current_room_data["items"].remove(item)
-            self.inventory.append(item)
+            self.inventory.append(item)  # Add item to inventory
         else:
             print(f"There's no {item} anywhere.")
 
@@ -76,4 +77,5 @@ if __name__ == "__main__":
     while True:
         command = input().strip()
         game.execute_command(command)
+
 
