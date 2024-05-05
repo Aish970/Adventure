@@ -36,12 +36,11 @@ class TextAdventureGame:
             for direction, room_id in room["exits"].items():
                 if room_id not in room_names:
                     sys.stderr.write(f"Invalid exit in room '{room['name']}': {direction} points to non-existing room '{room_id}'.\n")
-                    # Skip this exit and continue validating
-                    continue
+                    sys.exit(1)
 
     def go(self, direction):
         print("Current Room:", self.current_room)
-        if "exits" in self.current_room and direction in self.current_room["exits"]:
+        if "exits" in self.current_room and isinstance(self.current_room["exits"], dict) and direction in self.current_room["exits"]:
             next_room_name = self.current_room["exits"][direction]
             for room in self.map["rooms"]:
                 if room["name"] == next_room_name:
@@ -51,7 +50,7 @@ class TextAdventureGame:
                     return
             print("There is no room in that direction.")
         else:
-            print("There is no exit in that direction.")
+            print("There is no exit in that direction or exits are not properly defined.")
 
     def look(self):
         print(f"You are in {self.current_room['name']}.")
@@ -107,4 +106,3 @@ class TextAdventureGame:
 if __name__ == "__main__":
     game = TextAdventureGame("look.map")
     game.play()
-
