@@ -1,4 +1,4 @@
-import json
+mport json
 from sys import argv
 
 abbreviations = {
