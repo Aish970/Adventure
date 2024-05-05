@@ -5,6 +5,7 @@ class TextAdventureGame:
     def __init__(self, map_file):
         self.rooms = {}
         self.current_room = None
+        self.inventory = []
         self.load_map(map_file)
 
     def load_map(self, map_file):
@@ -38,7 +39,7 @@ class TextAdventureGame:
             item = command[4:]
             self.get(item)
         elif command == "inventory":
-            self.inventory()
+            self.show_inventory()
         else:
             print(f"Invalid command: '{command}' is not recognized.")
 
@@ -56,11 +57,17 @@ class TextAdventureGame:
         if "items" in current_room_data and item in current_room_data["items"]:
             print(f"You pick up the {item}.")
             current_room_data["items"].remove(item)
+            self.inventory.append(item)
         else:
             print(f"There's no {item} anywhere.")
 
-    def inventory(self):
-        print("You're not carrying anything.")  # Placeholder for future implementation
+    def show_inventory(self):
+        if self.inventory:
+            print("Inventory:")
+            for item in self.inventory:
+                print(f"  {item}")
+        else:
+            print("You're not carrying anything.")
 
 if __name__ == "__main__":
     map_file = "look.map"  # Change this to your map filename
@@ -69,4 +76,4 @@ if __name__ == "__main__":
     while True:
         command = input().strip()
         game.execute_command(command)
-       
+
