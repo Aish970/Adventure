@@ -1,14 +1,14 @@
 [
     {
-        "name": "A white room",
-        "desc": "You are in a simple room with white walls.",
+        "name": " A white room",
+        "desc": "You are in a simple room with white walls."",
         "items": [],
         "exits": { "east": 1 },
         "locked": false
     },
     {
         "name": "An orange room",
-        "desc": "You are in a simple room with orange walls",
+        "desc": "You are in a simple room with white walls.",
         "items": ["key","bellows"],
         "exits": { "west": 0, "north": 2 },
         "locked": false
@@ -23,7 +23,7 @@
     },
     {
         "name": "A pink room",
-        "desc": "A floating restaurant. The chef seems to be guarding a door leading east.",
+        "desc": "A floating restaurant,The chef seems to be guarding a door leading east.",
         "items": [],
         "exits": { "west": 2, "east": 4 },
         "locked": true,
