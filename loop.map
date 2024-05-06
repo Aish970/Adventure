@@ -1,39 +1,39 @@
 {
-{
-  "start": "room_0",
+  "start": 0,
   "rooms": [
     {
       "name": "room_0",
       "desc": "A white room with white walls.",
-      "exits": { "north": "room_1", "northwest": "room_2", "east": "room_3" },
+      "exits": { "north": 1, "northwest": 2, "east": 3 },
       "items": []
     },
     {
       "name": "room_1",
       "desc": "A blue room with blue walls.",
-      "exits": { "west": "room_2", "south": "room_0", "east": "room_3" },
+      "exits": { "west": 2, "south": 0, "east": 3 },
       "items": []
     },
     {
       "name": "room_2",
       "desc": "A green room with bright green walls.",
-      "exits": { "east": "room_1", "southeast": "room_0", "west": "room_4" },
+      "exits": { "east": 1, "southeast": 0, "west": 4 },
       "items": ["banana", "bandana", "bellows", "deck of cards"]
     },
     {
       "name": "room_3",
       "desc": "A red room, fancy and red!",
-      "exits": { "west": "room_1", "southwest": "room_0" },
+      "exits": { "west": 1, "southwest": 0 },
       "items": ["rose"]
     },
     {
       "name": "room_4",
       "desc": "A purple room, fancy and secret!",
-      "exits": { "east": "room_2" },
+      "exits": { "east": 2 },
       "items": []
     }
   ]
 }
+
 
 
 
