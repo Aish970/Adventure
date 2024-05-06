@@ -29,11 +29,7 @@ class AdventureGame:
             try:
                 print("What would you like to do?", end=" ")
                 command = input().strip().lower()
-                new_location = self.process_command(command)
-                while new_location:
-                    print("What would you like to do?", end=" ")
-                    command = input().strip().lower()
-                    new_location = self.process_command(command)
+                self.process_command(command)
             except EOFError:
                 print("\nUse 'quit' to exit.")
 
@@ -42,42 +38,32 @@ class AdventureGame:
         base_command = command_parts[0]
 
         if base_command in ["north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest"]:
-            return self.move_player(base_command)
+            self.move_player(base_command)
         elif base_command == "go":
             if len(command_parts) > 1:
                 direction = command_parts[1]
-                return self.move_player(direction)
+                self.move_player(direction)
             else:
                 print("Sorry, you need to 'go' somewhere.")
-                return None
         elif base_command == "look":
             self.look()
-            return None
         elif base_command == "get":
             self.handle_get_command(command_parts)
-            return None
         elif base_command == "drop":
             self.handle_drop_command(command_parts)
-            return None
         elif base_command == "inventory":
             self.show_inventory()
-            return None
         elif base_command == "items":
             self.show_items()
-            return None
         elif base_command == "help":
             self.show_help()
-            return None
         elif base_command == "exits":
             self.show_exits()
-            return None
         elif base_command == "quit":
             print("Goodbye!")
             self.game_running = False
-            return None
         else:
             print("Invalid command. Try 'help' for a list of valid commands.")
-            return None
 
     def move_player(self, direction):
         current_location = self.game_map.get(self.current_location)
@@ -87,7 +73,6 @@ class AdventureGame:
                 if next_location_name in self.game_map:
                     self.current_location = next_location_name
                     print(f"You go {direction.capitalize()}.")
-                    print()
                     self.look()
                     self.check_conditions()
                 else:
@@ -115,16 +100,14 @@ class AdventureGame:
     def look(self):
         location = self.game_map.get(self.current_location)
         if location:
-            self.check_conditions()
-            print(f"\n> {location['name']}\n")
-            print(f"{location['desc']}\n")
+            print(f"\n> {location['name']}")
+            print(f"{location['desc']}")
             items = location.get("items", [])
             if items:
-                items_str = ", ".join(items)
-                print(f"Items: {items_str}\n")
+                print("Items:", ", ".join(items))
             exits = location.get("exits", {})
-            exits_description = " ".join(exits.keys())
-            print(f"Exits: {exits_description.capitalize()}\n")
+            exits_description = " ".join(exits.keys()).capitalize()
+            print(f"Exits: {exits_description}\n")
         else:
             print("Error: Current location data not found.")
 
@@ -132,7 +115,6 @@ class AdventureGame:
         if len(command_parts) > 1:
             item_abbr = " ".join(command_parts[1:])
             self.get_item_by_abbr(item_abbr)
-            self.check_conditions()
         else:
             print("Sorry, you need to 'get' something.")
 
