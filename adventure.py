@@ -5,7 +5,7 @@ abbreviations = {
     "g": ["get", "go"],
     "i": ["items", "inventory"],
     "inv": "inventory"
-    # Additional abbreviations as needed
+    # Additional abbreviations as needed!!
 }
 
 direction_abbreviations = {
