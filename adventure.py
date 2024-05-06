@@ -5,7 +5,7 @@ abbreviations = {
     "g": ["get", "go"],
     "i": ["items", "inventory"],
     "inv": "inventory"
-    # Additional abbreviations as needed!!
+    # Additional abbreviations as needed
 }
 
 direction_abbreviations = {
@@ -30,29 +30,27 @@ class AdventureGame:
         self.load_map()
 
     def load_map(self):
-        try:
-            with open(self.map_file, 'r') as file:
-                map_data = json.load(file)
-                print("Map data:", map_data)  # Print out the loaded map data
-                rooms = map_data.get("rooms", [])
-                for index, room_data in enumerate(rooms):
-                    self.game_map[index] = room_data
-                self.current_location = map_data.get("start", 0)  # Set the starting location index
-        except FileNotFoundError:
-            print(f"Error: File '{self.map_file}' not found.")
-        except json.JSONDecodeError:
-            print(f"Error: Invalid JSON format in '{self.map_file}'.")
+        with open(self.map_file, 'r') as file:
+            map_data = json.load(file)
+            if "start" in map_data:
+                del map_data["start"]
+            for index_str, room_data in map_data.items():
+                try:
+                    index = int(index_str)
+                except ValueError:
+                    print(f"Invalid room index: {index_str}. Skipping.")
+                    continue
+                self.game_map[index] = room_data
+        self.current_location = 0
 
     def start_game(self):
-        self.look()
         while self.game_running:
+            self.look()
             try:
-                print("What would you like to do?", end=" ")
-                command = input().strip().lower()
+                command = input("What would you like to do? ").strip().lower()
                 new_location = self.process_command(command)
                 while new_location:
-                    print("What would you like to do?", end=" ")
-                    command = input().strip().lower()
+                    command = input("What would you like to do? ").strip().lower()
                     new_location = self.process_command(command)
             except EOFError:
                 print("\nUse 'quit' to exit.")
@@ -61,11 +59,9 @@ class AdventureGame:
         command_parts = command.split()
         base_command = command_parts[0]
 
-        # Check if command is an abbreviation and get its full form
         if base_command in direction_abbreviations.values() or base_command in direction_abbreviations:
             return self.move_player(direction_abbreviations.get(base_command, base_command))
         elif base_command == "go":
-            # Handle 'go' followed by a direction
             if len(command_parts) > 1:
                 direction = direction_abbreviations.get(command_parts[1], command_parts[1])
                 return self.move_player(direction)
@@ -102,56 +98,41 @@ class AdventureGame:
             return None
 
     def move_player(self, direction):
-        current_location = self.game_map.get(self.current_location)
-        if current_location:
-            if direction in current_location["exits"]:
-                next_location_index = current_location["exits"][direction]
-                if next_location_index in self.game_map:  # Check if the next location index is valid
-                    next_location = self.game_map[next_location_index]
-                    # Move the player to the next location
-                    self.current_location = next_location_index
-                    print(f"You go {direction}.")
-                    print()
-                    self.look()
-                    self.check_conditions()
-                else:
-                    print(f"There's no way to go {direction}.")
+        current_location = self.game_map[self.current_location]
+        if direction in current_location["exits"]:
+            next_location_index = current_location["exits"][direction]
+            if next_location_index in self.game_map:
+                self.current_location = next_location_index
+                self.look()
+                self.check_conditions()
             else:
                 print(f"There's no way to go {direction}.")
         else:
-            print("Error: Current location data not found.")
+            print(f"There's no way to go {direction}.")
 
     def check_conditions(self):
-        location = self.game_map.get(self.current_location)
-        if location:
-            conditions = location.get("conditions", {})
-
-            # Check winning condition
-            win_condition = conditions.get("win")
-            if win_condition and win_condition["item"] in self.player_inventory:
-                print(win_condition["message"])
-                self.game_running = False
-            elif conditions.get("lose"):
-                lose_condition = conditions.get("lose")
-                print(lose_condition["message"])
-                self.game_running = False
-        else:
-            print("Error: Current location data not found.")
+        location = self.game_map[self.current_location]
+        conditions = location.get("conditions", {})
+        win_condition = conditions.get("win")
+        if win_condition and win_condition["item"] in self.player_inventory:
+            print(win_condition["message"])
+            self.game_running = False
+        elif conditions.get("lose"):
+            lose_condition = conditions.get("lose")
+            print(lose_condition["message"])
+            self.game_running = False
 
     def look(self):
-        location = self.game_map.get(self.current_location)
-        if location:
-            self.check_conditions()
-            print(f"> {location['name']}\n")
-            print(f"{location['desc']}\n")
-            items = location.get("items", [])
-            if items:
-                print("Items: " + " ".join(items) + "\n")
-            exits = location.get("exits", {})
-            exits_description = " ".join(exits.keys())
-            print(f"Exits: {exits_description}\n")
-        else:
-            print("Error: Current location data not found.")
+        location = self.game_map[self.current_location]
+        self.check_conditions()
+        print(f"> {location['name']}\n")
+        print(f"{location['desc']}\n")
+        items = location.get("items", [])
+        if items:
+            print("Items: " + " ".join(items) + "\n")
+        exits = location.get("exits", {})
+        exits_description = " ".join(exits.keys())
+        print(f"Exits: {exits_description}\n")
 
     def handle_get_command(self, command_parts):
         if len(command_parts) > 1:
@@ -162,17 +143,14 @@ class AdventureGame:
             print("Sorry, you need to 'get' something.")
 
     def get_item_by_abbr(self, item_abbr):
-        location = self.game_map.get(self.current_location)
-        if location:
-            matching_items = [item for item in location.get("items", []) if item.lower().startswith(item_abbr.lower())]
-            if len(matching_items) == 1:
-                self.pick_up_item(matching_items[0])
-            elif len(matching_items) > 1:
-                self.ask_for_item_clarification(matching_items)
-            else:
-                print("There's no " + str(item_abbr) + " anywhere.")
+        location = self.game_map[self.current_location]
+        matching_items = [item for item in location.get("items", []) if item.lower().startswith(item_abbr.lower())]
+        if len(matching_items) == 1:
+            self.pick_up_item(matching_items[0])
+        elif len(matching_items) > 1:
+            self.ask_for_item_clarification(matching_items)
         else:
-            print("Error: Current location data not found.")
+            print(f"There's no {item_abbr} anywhere.")
 
     def ask_for_item_clarification(self, matching_items):
         print("Did you want to get the " + ", ".join(matching_items) + "?")
@@ -183,30 +161,20 @@ class AdventureGame:
             print("Invalid item choice.")
 
     def pick_up_item(self, item_name):
-        location = self.game_map.get(self.current_location)
-        if location:
-            if item_name in location.get("items", []):
-                location["items"].remove(item_name)
-                self.player_inventory.append(item_name)
-                print(f"You pick up the {item_name}.")
-                # Immediately check for win/lose conditions after picking up an item
-                self.check_conditions()
-            else:
-                print(f"Error: '{item_name}' not found in current location.")
-        else:
-            print("Error: Current location data not found.")
+        location = self.game_map[self.current_location]
+        if item_name in location.get("items", []):
+            location["items"].remove(item_name)
+            self.player_inventory.append(item_name)
+            print(f"You pick up the {item_name}.")
+            self.check_conditions()
 
     def handle_drop_command(self, command_parts):
         if len(command_parts) > 1:
             item = " ".join(command_parts[1:])
             if item in self.player_inventory:
                 self.player_inventory.remove(item)
-                location = self.game_map.get(self.current_location)
-                if location:
-                    location.setdefault("items", []).append(item)
-                    print(f"You dropped the {item}.")
-                else:
-                    print("Error: Current location data not found.")
+                self.game_map[self.current_location].setdefault("items", []).append(item)
+                print(f"You dropped the {item}.")
             else:
                 print(f"You don't have {item} in your inventory.")
         else:
@@ -221,26 +189,20 @@ class AdventureGame:
             print("You're not carrying anything.")
 
     def show_items(self):
-        location = self.game_map.get(self.current_location)
-        if location:
-            items = location.get("items", [])
-            if items:
-                print("Items in this location:", ", ".join(items))
-            else:
-                print("There are no items here.")
+        location = self.game_map[self.current_location]
+        items = location.get("items", [])
+        if items:
+            print("Items in this location:", ", ".join(items))
         else:
-            print("Error: Current location data not found.")
+            print("There are no items here.")
 
     def show_exits(self):
-        location = self.game_map.get(self.current_location)
-        if location:
-            exits = location.get("exits", {})
-            if exits:
-                print("Available exits:", " ".join(exits.keys()))
-            else:
-                print("There are no exits from here.")
+        location = self.game_map[self.current_location]
+        exits = location.get("exits", {})
+        if exits:
+            print("Available exits:", " ".join(exits.keys()))
         else:
-            print("Error: Current location data not found.")
+            print("There are no exits from here.")
 
     def show_help(self):
         print("Available commands:")
@@ -266,3 +228,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
