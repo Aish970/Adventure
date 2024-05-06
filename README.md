@@ -13,12 +13,10 @@ This repository contains the implementation of a text-based adventure game engin
 Features:
 
 Map Loading:
-The game engine seamlessly loads maps stored in JSON files, enabling the creation of versatile and dynamic game environments.
-It meticulously validates the map data to ensure coherence and accuracy, thereby averting any potential errors during gameplay.
+The game engine's map loading functionality allows for the seamless integration of maps stored in JSON files. This feature enhances the game's versatility and dynamism by enabling the creation of diverse and immersive game environments. The engine meticulously validates the map data to ensure coherence and accuracy, thus preventing any potential errors that may arise during gameplay. This robust validation process guarantees that the game world remains consistent and engaging for players.
 
 Player Interaction:
-Upon entering the game, players are immersed into a captivating world filled with diverse rooms, each adorned with its distinct description and exits.
-The game engine adeptly interprets player commands, facilitating seamless movement, item manipulation, and other interactions within the game universe.
+Upon entering the game, players are transported into a captivating world comprising various rooms, each with its unique description and exits. The game engine excels at interpreting player commands, enabling smooth movement, item manipulation, and other interactions within the game universe. Whether players are exploring new areas, picking up items, or navigating through intricate puzzles, the engine facilitates these interactions seamlessly, enhancing the overall gaming experience. With intuitive controls and responsive feedback, players can fully immerse themselves in the game world and embark on exciting adventures.
 
 
 Extensions:
