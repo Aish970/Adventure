@@ -1,4 +1,3 @@
-
 {
   "start": "A white room",
   "rooms": [
@@ -12,7 +11,7 @@
       "desc": "This room is simple, too, but with blue walls.",
       "exits": { "west": "A green room", "south": "A white room", "southeast": "A red room" }
     },
-  
+    {
       "name": "A green room",
       "desc": "You are in a simple room, with bright green walls.",
       "exits": { "east": "A blue room", "southeast": "A white room" },
@@ -26,6 +25,7 @@
     }
   ]
 }
+
 
 
 
