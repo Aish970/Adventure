@@ -110,7 +110,7 @@ class AdventureGame:
         print(f"{location['desc']}\n")
         items = location.get("items", [])
         if items:
-            print("Items: " + " ".join(items) + "\n")
+            print("Items: " + ", ".join(items) + "\n")
         exits = location.get("exits", {})
         exits_description = " ".join(exits.keys())
         print(f"Exits: {exits_description}\n")
@@ -166,7 +166,7 @@ class AdventureGame:
         if self.player_inventory:
             print("Inventory:")
             for item in self.player_inventory:
-                print(" ", item)
+                print("  ", item)
         else:
             print("You're not carrying anything.")
 
@@ -188,15 +188,15 @@ class AdventureGame:
 
     def show_help(self):
         print("Available commands:")
-        print(" go [direction] - Move in the specified direction (north, south, east, west).")
-        print(" get [item] - Pick up an item from the current location.")
-        print(" drop [item] - Drop an item from your inventory into the current location.")
-        print(" inventory - Show the items you are carrying.")
-        print(" look - Describe the current location.")
-        print(" items - List all items in the current location.")
-        print(" exits - Show all available exits from the current location.")
-        print(" help - Display this help message.")
-        print(" quit - Exit the game.")
+        print("  go [direction] - Move in the specified direction (north, south, east, west).")
+        print("  get [item] - Pick up an item from the current location.")
+        print("  drop [item] - Drop an item from your inventory into the current location.")
+        print("  inventory - Show the items you are carrying.")
+        print("  look - Describe the current location.")
+        print("  items - List all items in the current location.")
+        print("  exits - Show all available exits from the current location.")
+        print("  help - Display this help message.")
+        print("  quit - Exit the game.")
 
     def get_room(self, room_name):
         for room in self.game_map['rooms']:
