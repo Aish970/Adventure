@@ -8,7 +8,7 @@ GitHub Repo: Adventure
 
 Description
 
-This repository contains the implementation of a text-based adventure game engine that loads and lets the player interact with a game world defined by a map file in JSON format. 
+This repository hosts the codebase for a text-based adventure game engine designed to immerse players in dynamic game worlds defined by JSON map files. Through seamless loading and interaction, players navigate diverse environments, uncovering rich descriptions and engaging challenges along the way.
 
 Features:
 
@@ -85,7 +85,7 @@ The game engine underwent comprehensive testing procedures, encompassing both au
 
 Known Issues:
 
-During the development phase, we encountered a few bugs and challenges, such as occasional difficulties with parsing JSON map files and occasional glitches in the inventory system. However, thorough testing was conducted to identify and resolve these issues. Despite these challenges, no bugs were detected during our extensive testing of the game.
+During the development phase, I encountered a few bugs and challenges, such as occasional difficulties with parsing JSON map files and occasional glitches in the inventory system. However, thorough testing was conducted to identify and resolve these issues. 
 
 
 Acknowledgements
