@@ -109,7 +109,7 @@ class AdventureGame:
                     next_location = self.game_map[next_location_index]
                     # Move the player to the next location
                     self.current_location = next_location_index
-                    print(f"You go {direction}.")
+                    print(f"You go {direction.capitalize()}.")
                     print()
                     self.look()
                     self.check_conditions()
@@ -141,18 +141,15 @@ class AdventureGame:
         location = self.game_map.get(self.current_location)
         if location:
             self.check_conditions()
-            print(f"> {location['name']}\n")
+            print(f"\n> {location['name']}\n")
             print(f"{location['desc']}\n")
             items = location.get("items", [])
             if items:
                 items_str = ", ".join(items)
-                if len(items) > 1:
-                    print(f"Items: {items_str}\n")
-                else:
-                    print(f"Items: {items_str}\n")
+                print(f"Items: {items_str}\n")
             exits = location.get("exits", {})
             exits_description = " ".join(exits.keys())
-            print(f"Exits: {exits_description}\n")
+            print(f"Exits: {exits_description.capitalize()}\n")
         else:
             print("Error: Current location data not found.")
 
@@ -173,7 +170,7 @@ class AdventureGame:
             elif len(matching_items) > 1:
                 self.ask_for_item_clarification(matching_items)
             else:
-                print("There's no " + str(item_abbr) + " anywhere.")
+                print(f"There's no {item_abbr} anywhere.")
         else:
             print("Error: Current location data not found.")
 
