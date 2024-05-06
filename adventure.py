@@ -1,25 +1,6 @@
 import sys
 import json
 
-abbreviations = {
-    "g": ["get", "go"],
-    "i": ["items", "inventory"],
-    "inv": "inventory"
-    # Additional abbreviations as needed
-}
-
-direction_abbreviations = {
-    "n": "north",
-    "e": "east",
-    "s": "south",
-    "w": "west",
-    "ne": "northeast",
-    "nw": "northwest",
-    "se": "southeast",
-    "sw": "southwest",
-    # Extend with other abbreviations as needed
-}
-
 class AdventureGame:
     def __init__(self, map_file):
         self.map_file = map_file
@@ -32,11 +13,11 @@ class AdventureGame:
     def load_map(self):
         try:
             with open(self.map_file, 'r') as file:
-                map_data = json.load(file)
-                rooms = map_data.get("rooms", [])
-                for index, room_data in enumerate(rooms):
-                    self.game_map[index] = room_data
-                self.current_location = map_data.get("start", 0)  # Set the starting location index
+                game_map = json.load(file)
+                start = game_map.get("start")
+                rooms = game_map.get("rooms", [])
+                self.game_map = {room["name"]: room for room in rooms}
+                self.current_location = start
         except FileNotFoundError:
             print(f"Error: File '{self.map_file}' not found.")
         except json.JSONDecodeError:
@@ -60,13 +41,11 @@ class AdventureGame:
         command_parts = command.split()
         base_command = command_parts[0]
 
-        # Check if command is an abbreviation and get its full form
-        if base_command in direction_abbreviations.values() or base_command in direction_abbreviations:
-            return self.move_player(direction_abbreviations.get(base_command, base_command))
+        if base_command in ["north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest"]:
+            return self.move_player(base_command)
         elif base_command == "go":
-            # Handle 'go' followed by a direction
             if len(command_parts) > 1:
-                direction = direction_abbreviations.get(command_parts[1], command_parts[1])
+                direction = command_parts[1]
                 return self.move_player(direction)
             else:
                 print("Sorry, you need to 'go' somewhere.")
@@ -104,11 +83,9 @@ class AdventureGame:
         current_location = self.game_map.get(self.current_location)
         if current_location:
             if direction in current_location["exits"]:
-                next_location_index = current_location["exits"][direction]
-                if next_location_index in self.game_map:  # Check if the next location index is valid
-                    next_location = self.game_map[next_location_index]
-                    # Move the player to the next location
-                    self.current_location = next_location_index
+                next_location_name = current_location["exits"][direction]
+                if next_location_name in self.game_map:
+                    self.current_location = next_location_name
                     print(f"You go {direction.capitalize()}.")
                     print()
                     self.look()
@@ -124,8 +101,6 @@ class AdventureGame:
         location = self.game_map.get(self.current_location)
         if location:
             conditions = location.get("conditions", {})
-
-            # Check winning condition
             win_condition = conditions.get("win")
             if win_condition and win_condition["item"] in self.player_inventory:
                 print(win_condition["message"])
@@ -190,7 +165,6 @@ class AdventureGame:
                 location["items"].remove(item_name)
                 self.player_inventory.append(item_name)
                 print(f"You pick up the {item_name}.")
-                # Immediately check for win/lose conditions after picking up an item
                 self.check_conditions()
             else:
                 print(f"Error: '{item_name}' not found in current location.")
@@ -254,7 +228,6 @@ class AdventureGame:
         print("  exits - Show all available exits from the current location.")
         print("  help - Display this help message.")
         print("  quit - Exit the game.")
-
 
 def main():
     if len(sys.argv) < 2:
