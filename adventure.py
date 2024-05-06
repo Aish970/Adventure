@@ -5,19 +5,17 @@ abbreviations = {
     "g": ["get", "go"],
     "i": ["items", "inventory"],
     "inv": "inventory"
-    # Additional abbreviations as needed
 }
 
 direction_abbreviations = {
     "n": "north",
+    "w": "west",
     "e": "east",
     "s": "south",
-    "w": "west",
-    "ne": "northeast",
     "nw": "northwest",
     "se": "southeast",
     "sw": "southwest",
-    # Extend with other abbreviations as needed
+    "ne": "northeast"
 }
 
 class AdventureGame:
@@ -47,11 +45,9 @@ class AdventureGame:
         command_parts = command.split()
         base_command = command_parts[0]
 
-        # Check if command is an abbreviation and get its full form
         if base_command in direction_abbreviations.values() or base_command in direction_abbreviations:
             self.move_player(direction_abbreviations.get(base_command, base_command))
         elif base_command == "go":
-            # Handle 'go' followed by a direction
             if len(command_parts) > 1:
                 direction = direction_abbreviations.get(command_parts[1], command_parts[1])
                 self.move_player(direction)
@@ -85,27 +81,11 @@ class AdventureGame:
             print(f"You go {direction}.")
             print()
             self.look()
-            self.check_conditions()
         else:
             print(f"There's no way to go {direction}.")
 
-    def check_conditions(self):
-        location = self.get_room(self.current_location)
-        conditions = location.get("conditions", {})
-
-        # Check winning condition
-        win_condition = conditions.get("win")
-        if win_condition and win_condition["item"] in self.player_inventory:
-            print(win_condition["message"])
-            self.game_running = False
-        elif conditions.get("lose"):
-            lose_condition = conditions.get("lose")
-            print(lose_condition["message"])
-            self.game_running = False
-
     def look(self):
         location = self.get_room(self.current_location)
-        self.check_conditions()
         print(f"> {location['name']}\n")
         print(f"{location['desc']}\n")
         items = location.get("items", [])
@@ -119,7 +99,6 @@ class AdventureGame:
         if len(command_parts) > 1:
             item_abbr = " ".join(command_parts[1:])
             self.get_item_by_abbr(item_abbr)
-            self.check_conditions()
         else:
             print("Sorry, you need to 'get' something.")
 
@@ -147,8 +126,6 @@ class AdventureGame:
             location["items"].remove(item_name)
             self.player_inventory.append(item_name)
             print(f"You pick up the {item_name}.")
-            # Immediately check for win/lose conditions after picking up an item
-            self.check_conditions()
 
     def handle_drop_command(self, command_parts):
         if len(command_parts) > 1:
