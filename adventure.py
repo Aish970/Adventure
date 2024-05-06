@@ -82,34 +82,18 @@ class AdventureGame:
         if direction in current_location["exits"]:
             next_location = current_location["exits"][direction]
             self.current_location = next_location
-            print(f"You go {direction}.\n")
+            print(f"What would you like to do? You go {direction}.\n")
             self.look()
-            self.check_conditions()
         else:
             print(f"There's no way to go {direction}.\n")
 
-    def check_conditions(self):
-        location = self.get_room(self.current_location)
-        conditions = location.get("conditions", {})
-
-        # Check winning condition
-        win_condition = conditions.get("win")
-        if win_condition and win_condition["item"] in self.player_inventory:
-            print(win_condition["message"])
-            self.game_running = False
-        elif conditions.get("lose"):
-            lose_condition = conditions.get("lose")
-            print(lose_condition["message"])
-            self.game_running = False
-
     def look(self):
         location = self.get_room(self.current_location)
-        self.check_conditions()
         print(f"> {location['name']}\n")
         print(f"{location['desc']}\n")
         items = location.get("items", [])
         if items:
-            print("Items: " + ", ".join(items) + "\n")
+            print("Items: " + " ".join(items) + "\n")
         exits = location.get("exits", {})
         exits_description = " ".join(exits.keys())
         print(f"Exits: {exits_description}\n")
@@ -118,9 +102,8 @@ class AdventureGame:
         if len(command_parts) > 1:
             item_abbr = " ".join(command_parts[1:])
             self.get_item_by_abbr(item_abbr)
-            self.check_conditions()
         else:
-            print("Sorry, you need to 'get' something.")
+            print("Sorry, you need to 'get' something.\n")
 
     def get_item_by_abbr(self, item_abbr):
         location = self.get_room(self.current_location)
@@ -130,7 +113,7 @@ class AdventureGame:
         elif len(matching_items) > 1:
             self.ask_for_item_clarification(matching_items)
         else:
-            print(f"There's no {item_abbr} anywhere.")
+            print("There's no " + str(item_abbr) + " anywhere.\n")
 
     def ask_for_item_clarification(self, matching_items):
         print("Did you want to get the " + ", ".join(matching_items) + "?")
@@ -138,7 +121,7 @@ class AdventureGame:
         if choice in matching_items:
             self.pick_up_item(choice)
         else:
-            print("Invalid item choice.")
+            print("Invalid item choice.\n")
 
     def pick_up_item(self, item_name):
         location = self.get_room(self.current_location)
@@ -146,8 +129,6 @@ class AdventureGame:
             location["items"].remove(item_name)
             self.player_inventory.append(item_name)
             print(f"You pick up the {item_name}.\n")
-            # Immediately check for win/lose conditions after picking up an item
-            self.check_conditions()
 
     def handle_drop_command(self, command_parts):
         if len(command_parts) > 1:
@@ -157,7 +138,7 @@ class AdventureGame:
                 self.get_room(self.current_location).setdefault("items", []).append(item)
                 print(f"You dropped the {item}.\n")
             else:
-                print(f"You don't have {item} in your inventory.")
+                print(f"You don't have {item} in your inventory.\n")
         else:
             print("You must specify an item to drop.\n")
 
@@ -165,7 +146,7 @@ class AdventureGame:
         if self.player_inventory:
             print("Inventory:")
             for item in self.player_inventory:
-                print("  ", item)
+                print(" ", item)
         else:
             print("You're not carrying anything.\n")
 
@@ -175,7 +156,7 @@ class AdventureGame:
         if items:
             print("Items in this location:", ", ".join(items))
         else:
-            print("There are no items here.")
+            print("There are no items here.\n")
 
     def show_exits(self):
         location = self.get_room(self.current_location)
@@ -183,7 +164,7 @@ class AdventureGame:
         if exits:
             print("Available exits:", " ".join(exits.keys()))
         else:
-            print("There are no exits from here.")
+            print("There are no exits from here.\n")
 
     def show_help(self):
         print("Available commands:")
@@ -195,13 +176,14 @@ class AdventureGame:
         print(" items - List all items in the current location.")
         print(" exits - Show all available exits from the current location.")
         print(" help - Display this help message.")
-        print(" quit - Exit the game.")
+        print(" quit - Exit the game.\n")
 
     def get_room(self, room_name):
         for room in self.game_map['rooms']:
             if room['name'] == room_name:
                 return room
         return None
+
 
 def main():
     if len(sys.argv) < 2:
@@ -210,6 +192,7 @@ def main():
     map_file = sys.argv[1]
     game = AdventureGame(map_file)
     game.start_game()
+
 
 if __name__ == "__main__":
     main()
