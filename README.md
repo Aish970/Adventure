@@ -25,15 +25,60 @@ Extensions:
 
 Help Command:
 Players can utilize the help command to access a comprehensive list of available commands along with their descriptions, providing valuable guidance and assistance throughout gameplay.
+What would you like to do? help
+Available commands:
+  go [direction] - Move in the specified direction (north, south, east, west).
+  get [item] - Pick up an item from the current location.
+  drop [item] - Drop an item from your inventory into the current location.
+  inventory - Show the items you are carrying.
+  look - Describe the current location.
+  items - List all items in the current location.
+  exits - Show all available exits from the current location.
+  help - Display this help message.
+  quit - Exit the game.
 
 Drop and Inventory System:
 The game incorporates an efficient inventory system allowing players to efficiently manage their items.
 Players can employ the drop [item] command to seamlessly remove items from their inventory and place them in the current location.
 Furthermore, the inventory command offers players a convenient way to inspect the items they are currently carrying.
+> A green room
+
+A green room with bright green walls.
+
+Items: banana, bandana, bellows, deck of cards
+
+Exits: East southeast west
+
+ What would you like to do? drop bellows
+You dropped the bellows.
+What would you like to do? 
 
 Direction Verbs:
 Enhancing player convenience and gameplay fluidity, the game supports both full directions (north, south, east, west) and their corresponding abbreviations.
-Players can effortlessly navigate through the game world using abbreviated commands for movement, ensuring a seamless and intuitive gaming experience.
+Players can effortlessly navigate through the game world using abbreviated commands for movement, ensuring a seamless and intuitive gaming experience.base)
+O/P:aishwaryabhethanabotla@Aishwaryas-MacBook-Pro ~ % cd Desktop                   
+(base) aishwaryabhethanabotla@Aishwaryas-MacBook-Pro Desktop % cd Adventure-main-8          
+(base) aishwaryabhethanabotla@Aishwaryas-MacBook-Pro Adventure-main-8 % python3 adventure.py loop.map
+
+> A white room
+
+A white room with white walls.
+
+Exits: North northwest east
+
+What would you like to do? go n
+You go North.
+
+
+> A blue room
+
+A blue room with blue walls.
+
+Exits: West south east
+
+What would you like to do? 
+
+
 
 
 Testing:
