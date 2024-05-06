@@ -34,16 +34,10 @@ class AdventureGame:
             with open(self.map_file, 'r') as file:
                 map_data = json.load(file)
                 print("Map data:", map_data)  # Print out the loaded map data
-                if "start" in map_data:
-                    del map_data["start"]  # Remove the "start" key if present
-                for index_str, room_data in map_data.items():
-                    try:
-                        index = int(index_str)
-                    except ValueError:
-                        print(f"Invalid room index: {index_str}. Skipping.")
-                        continue
+                rooms = map_data.get("rooms", [])
+                for index, room_data in enumerate(rooms):
                     self.game_map[index] = room_data
-                self.current_location = 0  # Set a default starting location index
+                self.current_location = map_data.get("start", 0)  # Set the starting location index
         except FileNotFoundError:
             print(f"Error: File '{self.map_file}' not found.")
         except json.JSONDecodeError:
@@ -272,6 +266,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-             
