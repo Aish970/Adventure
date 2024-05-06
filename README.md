@@ -67,7 +67,7 @@ A white room with white walls.
 Exits: North northwest east
 
 What would you like to do? go n
-You go North.
+You go north.
 
 
 > A blue room
